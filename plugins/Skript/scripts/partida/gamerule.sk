@@ -1,0 +1,13 @@
+on load:
+    set the gamerule announceAdvancements of world "castlefight1", "castlefight2", "castlefight3", "castlefight4", "castlefight5" and "castlefight6" to false
+    set the gamerule commandBlockOutput of world "castlefight1", "castlefight2", "castlefight3", "castlefight4", "castlefight5" and "castlefight6" to false
+    set the gamerule disableRaids of world "castlefight1", "castlefight2", "castlefight3", "castlefight4", "castlefight5" and "castlefight6" to true
+    set the gamerule doEntityDrops of world "castlefight1", "castlefight2", "castlefight3", "castlefight4", "castlefight5" and "castlefight6" to false
+    set the gamerule doImmediateRespawn of world "castlefight1", "castlefight2", "castlefight3", "castlefight4", "castlefight5" and "castlefight6" to true
+    set the gamerule doInsomnia of world "castlefight1", "castlefight2", "castlefight3", "castlefight4", "castlefight5" and "castlefight6" to true
+    set the gamerule doMobLoot of world "castlefight1", "castlefight2", "castlefight3", "castlefight4", "castlefight5" and "castlefight6" to false
+    set the gamerule doMobSpawning of world "castlefight1", "castlefight2", "castlefight3", "castlefight4", "castlefight5" and "castlefight6" to false
+    set the gamerule keepInventory of world "castlefight1", "castlefight2", "castlefight3", "castlefight4", "castlefight5" and "castlefight6" to true
+    set the gamerule sendCommandFeedback of world "castlefight1", "castlefight2", "castlefight3", "castlefight4", "castlefight5" and "castlefight6"  to false
+
+    message "gamerule setados" to console

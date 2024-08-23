@@ -1,0 +1,6 @@
+include-menu-in-template: false
+relative-menu-name: false
+replace-all-variables-each-check: true
+use-modern-click-type: false
+trim-menu-file-extension: false
+use-legacy-button: true

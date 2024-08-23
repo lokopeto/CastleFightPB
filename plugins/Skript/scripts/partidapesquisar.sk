@@ -1,0 +1,241 @@
+command /partidapesquisarcancelar:
+    permission: pspc.cmd
+    aliases: /pspc
+    trigger:
+
+        if {psspwait::%player%} is 3:
+            teleport player to {pssplocplayer::%player%}
+
+        set {psspwait::%player%} to 0
+        message "&7&oPesquisa cancelada"
+        set slot 0 of player to 1 recovery compass named "&bBuscar Partida"
+        set item cooldown of slot 0 of player to 3 seconds
+        loop 5 times:
+            continue
+            wait 1 tick
+            send action bar "&7&oPesquisa cancelada" to player
+        delete {pssplocplayer::%player%} 
+        wait 3 seconds
+        if {psspwait::%player%} is not 1:
+            set {psspwait::%player%} to 1
+
+command /partidapesquisar [<integer>]:
+    permission: psp.cmd
+    aliases: /psp
+    trigger:
+
+        if {psspwait::%player%} is 2 or 3:
+            execute player command "partidapesquisarcancelar"
+            stop
+             
+        if arg-1 is 1:
+            create a gui with virtual chest inventory with 1 rows named "Busca Avançada":
+                set {_slots1} to 0
+
+                loop all worlds:
+                    loop-world is "castlefight1", "castlefight2", "castlefight3", "castlefight4", "castlefight5" or "castlefight6"
+
+                    delete {_loreacahada::*}, {_loreacahadaplayer1::*} and {_loreacahadaplayer2::*}
+
+                    {jogo::%loop-world%} is 0:
+                        amount of players in loop-world > 0: 
+                            add "&6&lEsperando Jogadores" to {_loreacahada::*}
+                        else:
+                            add "&2&lLivre" to {_loreacahada::*}
+                    {jogo::%loop-world%} is 1:
+                        add "&c&lEm progresso" to {_loreacahada::*}
+   
+                    if {jogo::%loop-world%} is 1:
+                        set {_colorteam} to "&7"
+
+                    loop all players in loop-world:
+                        "%team of loop-player%" is "castelo1%loop-world%":
+                            add "   &2%{_colorteam}%&n%name of loop-player%" to {_loreacahadaplayer1::*}
+                        "%team of loop-player%" is "castelo2%loop-world%":
+                            add "   &2%{_colorteam}%&n%name of loop-player%" to {_loreacahadaplayer2::*}
+
+
+                    amount of players in loop-world > 0:
+                        if {_loreacahadaplayer1::*} is set:
+                            add "" to {_loreacahada::*}
+                            add "&a%{_colorteam}%&lRei Carvalho:" to {_loreacahada::*}
+                            add {_loreacahadaplayer1::*} to {_loreacahada::*}
+
+                        if {_loreacahadaplayer2::*} is set:
+                            add "" to {_loreacahada::*}
+                            add "&a%{_colorteam}%&lRei Barro:" to {_loreacahada::*}
+                            add {_loreacahadaplayer2::*} to {_loreacahada::*}
+
+                    add "" to {_loreacahada::*}
+
+                    {jogo::%loop-world%} is 1:
+                        add "&8<Clique para espectar>" to {_loreacahada::*}
+                    {jogo::%loop-world%} is 0:
+                        add "&8<Clique para entrar>" to {_loreacahada::*}
+
+                    set {_nameloopworld} to "%loop-world%"
+                    replace "castlefight" in {_nameloopworld} with ""
+                    set {_nameloopworld} to "Castle Fight %{_nameloopworld}%"
+
+                    amount of players in loop-world > 0:
+                        set {_partidatypeitem} to "ender eye" parsed as item
+                        set {_partidanameitem} to "&d&l%{_nameloopworld}%"
+
+                    else:
+                        set {_partidatypeitem} to "ender pearl" parsed as item
+                        set {_partidanameitem} to "&5&l%{_nameloopworld}%"
+
+                    make gui slot {_slots1} with {_partidatypeitem} named {_partidanameitem} with lore {_loreacahada::*}:
+                        set {_itemnamepartida} to uncolored name of event-item in lowercase
+                        replace "castle fight " in {_itemnamepartida} with ""
+
+                        create a gui with virtual chest inventory with 1 rows named "Escolha seu rei":
+                            make gui slot 3 with wooden sword named "&a&lRei Carvalho" with lore "&2Clique para" and "&2Entrar" with nbt compound from "{tag:{HideFlags:2}}":
+                                close player's inventory
+
+                                set {_team} to 1
+                                set {_worldd} to {_itemnamepartida}
+
+                                set {psspwait::%player%} to 3
+
+                                execute console command "partidapesquisarteleport %{_team}% %{_worldd}% %player%"
+
+                            make gui slot 5 with wooden axe named "&a&lRei Barro" with lore "&2Clique para" and "&2Entrar" with nbt compound from "{tag:{HideFlags:2}}":
+                                close player's inventory
+
+                                set {_team} to 2
+                                set {_worldd} to {_itemnamepartida}
+                                
+                                set {psspwait::%player%} to 3
+
+                                execute console command "partidapesquisarteleport %{_team}% %{_worldd}% %player%"
+
+                        open the created gui for player
+
+                    {jogo::%loop-world%} is 1:
+                        make gui slot {_slots1} with emerald named "&7&l%{_nameloopworld}%" with lore {_loreacahada::*}
+                    
+                    add 1 to {_slots1}
+
+            open the created gui for player 
+
+        if arg-1 is 2:
+
+            if {psspwait::%player%} is 1:
+                message "&7&oBuscando partida"
+                set {psspwait::%player%} to 2
+
+            set {_time} to 0
+
+            while {psspwait::%player%} is 2:
+                loop all worlds:
+                    if {psspwait::%player%} is 0:
+                        stop
+                    loop-world is "castlefight1", "castlefight2", "castlefight3", "castlefight4", "castlefight5" or "castlefight6"  
+                    if {psspwait::%player%} is 3:
+                        stop loop
+                    wait 1 second
+                    set {_worldd} to name of loop-value
+                    replace "castlefight" in {_worldd} with ""
+                    amount of players in loop-value >= 1:
+                        loop all players in loop-value:
+                            if {rank::%loop-player%} is between {rank::%player%} and {rank::%player%} + 10:
+                                set {_rankcompativell} to 1
+                                send action bar "Rank Compativel Achado &7&o(%120 - {_time}%s, %loop-value-1%)" to player
+                            else:
+                                send action bar "Procurando rank compativel &7&o(%120 - {_time}%s, %loop-value-1%)" to player
+
+                            set {_reicarvalho} and {_reibarro} to 0
+
+                            if "%team of loop-player%" is "castelo1%world of loop-player%":
+                                add 1 to {_reicarvalho}
+                        
+                            if "%team of loop-player%" is "castelo2%world of loop-player%":
+                                add 1 to {_reibarro}
+                            
+
+                        if {_rankcompativell} is 1:
+
+                            if {_reicarvalho} > {_reibarro}:
+                                set {_disponibilidade} to 1
+                                set {_team} to 2
+                            
+                            if {_reicarvalho} < {_reibarro}:
+                                set {_disponibilidade} to 1
+                                set {_team} to 1
+
+                            if {_disponibilidade} is 1:
+                                send action bar "Partida encontrada com %amount of players in loop-value% jogador(es) em %loop-value%" to player
+                                set {pssplocplayer::%player%} to location of player
+
+                                set {psspwait::%player%} to 3
+
+                                execute console command "partidapesquisarteleport %{_team}% %{_worldd}% %player%"
+                            else:
+                                send action bar "&c&lPartida indisponivel &7&o(%120 - {_time}%s, %loop-value%)" to player
+
+                    else:
+                        add 1 to {_time}
+                        send action bar "Procurando Partida &7&o(%{_time}%s, %loop-value%)" to player
+        
+        if arg-1 is not set:
+            if {psspwait::%player%} is 0:
+                message "&7&oEspere um momento"
+                send action bar "&7&oEspere um momento"
+                stop
+            create a gui with virtual chest inventory with 1 rows named "Tipo de Busca":
+                make gui slot 3 with 1 ender eye with nbt compound from "{display:{Lore:['{""italic"":false,""color"":""white"",""extra"":[{""text"":""""},{""color"":""dark_aqua"",""text"":""Veja qual ""},{""bold"":true,""color"":""dark_aqua"",""text"":""Rei""},{""color"":""dark_aqua"",""text"":"", ""},{""bold"":true,""color"":""dark_aqua"",""text"":""Jogadores""},{""color"":""dark_aqua"",""text"":"",""}],""text"":""""}','{""italic"":false,""color"":""white"",""extra"":[{""text"":""""},{""color"":""dark_aqua"",""text"":""obtenha uma ""},{""bold"":true,""color"":""dark_aqua"",""text"":""Lista das Partidas""}],""text"":""""}'],Name:'{""italic"":false,""extra"":[{""text"":""""},{""bold"":true,""color"":""light_purple"",""text"":""Lista de Partidas""}],""text"":""""}'},HideFlags:127}":
+                    close player's inventory    
+                    execute player command "partidapesquisar 1"
+
+                make gui slot 5 with 1 ender pearl with nbt compound from "{display:{Lore:['{""italic"":false,""color"":""white"",""extra"":[{""text"":""""},{""bold"":true,""color"":""dark_aqua"",""text"":""Recomendado""},{""color"":""dark_aqua"",""text"":"" para quem""}],""text"":""""}','{""italic"":false,""color"":""white"",""extra"":[{""text"":""""},{""color"":""dark_aqua"",""text"":""quer achar rapido uma ""}],""text"":""""}','{""italic"":false,""color"":""white"",""extra"":[{""text"":""""},{""bold"":true,""color"":""dark_aqua"",""text"":""Partida""}],""text"":""""}'],Name:'{""italic"":false,""extra"":[{""text"":""""},{""bold"":true,""color"":""yellow"",""text"":""Busca Cega""}],""text"":""""}'},HideFlags:127}":
+                    execute player command "partidapesquisar 2"
+                    close player's inventory
+
+
+            open the created gui for player 
+
+
+command /partidapesquisarteleport <integer> <integer> <player>:
+    permission: pspt.cmd
+    aliases: /pspt
+    executable by: console
+    trigger:
+        if {psspwait::%arg-3%} is 3:
+
+            set {_team} to arg-1
+            set {_worldd} to arg-2
+
+            while {psspwait::%arg-3%} is 3:
+                if {_team} is 1:
+                    set {_loc1placa} to 1
+                    set {_loc2placa} to 2
+
+                if {_team} is 2:
+                    set {_loc1placa} to 3
+                    set {_loc2placa} to 4
+
+
+                if {_team} is 1:
+                    set {_yaw} to {partidaplaca::%{_worldd}%::5}           
+                if {_team} is 2:
+                    set {_yaw} to {partidaplaca::%{_worldd}%::6}           
+
+
+                set {_loc1} to {partidaplaca::%{_worldd}%::%{_loc1placa}%}
+                set {_loc2} to {partidaplaca::%{_worldd}%::%{_loc2placa}%}
+
+
+
+                loop blocks between the block at {_loc1} and the block at {_loc2}:
+                    loop-block is sign:
+                        teleport arg-3 to location(loop-block's x-coordinate, loop-block's y-coordinate - 0.5, loop-block's z-coordinate, loop-block's world, {_yaw}, 70) 
+
+
+                send title "&b&lPARTIDA ENCONTRADA" with subtitle "&bClique com o botão direito para entrar" to arg-3 for 1 seconds with fadein 0 second and fade out 1 second
+                send action bar "&bCaso queira sair, digite &n/pspc" to arg-3
+
+                wait 1 tick
+
+
+

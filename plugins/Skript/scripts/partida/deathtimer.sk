@@ -1,0 +1,105 @@
+on death of player:
+
+    if world of victim is not world "world":
+
+        loop all players in world of victim:
+            if "%team of loop-player%" is "%team of victim%":
+                if name of victim is set:
+                    set {_por} to "&fpor &c&l&o%name of attacker%"
+                
+                if attacker exist:
+                    message "&a&l&o%victim% &ffoi morto %{_por}%" to loop-player
+                else:
+                    message "&a&l&o%victim% &fmorreu" to loop-player
+            if "%team of loop-player%" is "%team of attacker%":
+                message "&c&l&o%name of attacker% &fmatou &c&l&o%victim%" to loop-player
+
+        set {deathloc::%name of victim%} to location of victim
+        if attacker exist:
+            set {deathattacker::%name of victim%} to attacker
+        if name of attacker contains "(BOSS)":
+            if attacker is npc:
+                set {deathtimer::%name of victim%} to 30
+
+every 1 second:
+    loop all players:
+        add -1 to {deathtimer::%name of loop-player%}
+#        broadcast "%{deathtimer::%name of loop-player%}%"
+
+on respawn:
+    wait 1 tick
+    {jogo::%world of player%} is 1
+    set gamemode of player to spectator
+    teleport player to {deathloc::%name of player%}
+    set spectator target of player to {deathattacker::%name of player%}
+    play sound "fx.death" to all players in location of player
+    set {_tempo} to {deathtimer::%name of player%} -1
+    {deathtimer::%name of player%} <= 0:
+        set gamemode of player to adventure
+        send action bar "&7&o&lPronto para batalha!"
+        play sound "fx.respawn" to player
+    else:
+        set {_pitch} to 1
+        loop "%{_tempo}%" parsed as integer times:
+
+            wait 1 second
+
+            {deathtimer::%name of player%} is 20:
+                send action bar "&7&oFaltam &f&o%{deathtimer::%name of player%}%&7&o segundos.."
+            {deathtimer::%name of player%} <= 10:
+                send action bar "&7&oFaltam &f&o%{deathtimer::%name of player%}%&7&o segundos.."   
+                add 0.1 to {_pitch}
+                play sound "fx.countdown" with pitch {_pitch} to player
+            
+        wait 1 second
+
+        set gamemode of player to adventure
+        send action bar "&7&o&lPronto para batalha!"
+        
+        play sound "fx.respawn" to player
+
+    wait 1 tick
+
+    "%team of player%" is "castelo1%world of player%":
+        loop all entities in world of player:
+            if loop-entity has scoreboard tag "rei1":
+                teleport player to loop-entity
+    "%team of player%" is "castelo2%world of player%":
+        loop all entities in world of player:
+            if loop-entity has scoreboard tag "rei2":
+                teleport player to loop-entity
+
+    set {deathtimer::%name of player%} to 30
+    set {nodama::%name of player%} to 1
+    make console execute command "ppo %player% add soul_fire_flame beam"
+    make console execute command "ppo %player% add soul trail"  
+    wait 10 seconds
+    set {nodama::%name of player%} to 0
+    make console execute command "ppo %player% remove 1"
+    make console execute command "ppo %player% remove 2"
+    make console execute command "ppo %player% remove 3"
+
+on gamemode change to spectator:
+    if {deathtimer::%name of player%} >= 0:
+        while player's gamemode is spectator:
+            make console execute command "spectate %{deathplayer::%name of player%}% %name of player%"
+            wait 2 ticks
+
+on damage of player:
+    damage was caused by void:
+        "%team of victim%" is "castelo1%world of victim%":
+            loop all entities in world of victim:
+                if loop-entity has scoreboard tag "rei1":
+                    teleport victim to loop-entity
+        "%team of victim%" is "castelo2%world of victim%":
+            loop all entities in world of victim:
+                if loop-entity has scoreboard tag "rei2":
+                    teleport victim to loop-entity
+    {nodama::%name of victim%} is 1
+    cancel event
+    push the victim behind at speed 0.5
+    push the attacker behind at speed 0.5    
+
+on skript unload:
+    delete {deathtimer::*}
+    delete {deathloc::*}

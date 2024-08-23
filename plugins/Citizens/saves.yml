@@ -1,0 +1,53 @@
+# Citizens NPC Storage
+
+last-created-npc-id: 3352
+npc:
+  '3351':
+    name: Comerciante de Skins
+    uuid: fd31b083-092d-4f5c-a867-ee0f3cb1f46d
+    traits:
+      spawned: true
+      type: VILLAGER
+      denizen_flags:
+        full_flag_data:
+          npcskinshop: 'true'
+      location:
+        bodyYaw: 0.0
+        world: world
+        x: '-82.96'
+        y: '65.0'
+        z: '-57.29'
+        yaw: '0.0'
+        pitch: '0.0'
+    traitnames: spawned,type,mounttrait,denizen_flags,scoreboardtrait,location
+    navigator:
+      speedmodifier: '1.0'
+      avoidwater: false
+      usedefaultstuckaction: false
+  '3352':
+    name: lokopetoo
+    uuid: b41c5e30-0ac9-4d37-8c5f-13f4a29aeda6
+    traits:
+      skintrait:
+        fetchDefaultSkin: true
+        updateSkins: false
+      spawned: true
+      type: PLAYER
+      mounttrait:
+        mountedon: ad5df47c-0ddd-4990-80af-1297a43fd0c2
+      denizen_flags:
+        full_flag_data:
+          menuinicionpc: map@[__value=map@[p@ed5cee70-0798-3e13-b06c-47759ae5453b=map@[__value=true]]]
+      location:
+        bodyYaw: 213.90228
+        world: castlefightmenu
+        x: '-15.5872'
+        y: '168.0'
+        z: '102.6253'
+        yaw: '-146.0977'
+        pitch: '0.0'
+    traitnames: skintrait,spawned,type,mounttrait,denizen_flags,scoreboardtrait,inventory,location
+    navigator:
+      speedmodifier: '1.0'
+      avoidwater: false
+      usedefaultstuckaction: false

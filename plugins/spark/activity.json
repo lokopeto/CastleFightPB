@@ -1,0 +1,15 @@
+[
+  {
+    "user": {
+      "type": "player",
+      "name": "lokopetoo",
+      "uniqueId": "ed5cee70-0798-3e13-b06c-47759ae5453b"
+    },
+    "time": 1699402119524,
+    "type": "Heap dump",
+    "data": {
+      "type": "file",
+      "value": "plugins/spark/heap-2023-11-07_21.08.29.hprof"
+    }
+  }
+]

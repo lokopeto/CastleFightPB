@@ -1,0 +1,188 @@
+
+every 1 second:
+    set {_numb} to 0
+    loop all worlds:
+        loop-world is "castlefight1", "castlefight2", "castlefight3", "castlefight4", "castlefight5" or "castlefight6"
+        set {_numb} to 0
+        {jogo::%loop-world%} is 1
+
+        loop 2 times:
+            set {_numb} to 0
+            set {_val} to loop-value-2
+            wait 1 tick
+            loop 9 times:
+                add 1 to {_numb}
+                set {_lore1} to line 8 of lore of {Invocador%{_val}%::%loop-world%::%{_numb}%}
+                set {_lore2} to line 2 of lore of {Invocador%{_val}%::%loop-world%::%{_numb}%}
+                replace "&6Respawn = " in {_lore2} with ""
+                replace "Respawn orig. = " in {_lore1} with ""
+                set {_lore1} to uncolored {_lore1}
+                set {_lore1} to "%{_lore1}%" parsed as integer
+                if {_lore1} is set:
+                    add -1 to {_lore1}
+                set line 8 of lore of {Invocador%{_val}%::%loop-world%::%{_numb}%} to "&8&oRespawn orig. = %{_lore1}%"
+                if {_lore1} <= 0:
+                    set line 8 of lore of {Invocador%{_val}%::%loop-world%::%{_numb}%} to "&8&oRespawn orig. = %{_lore2}%"
+                    set {_lorelist::*} to uncolored lore of {Invocador%{_val}%::%loop-world%::%{_numb}%}
+                    set {_itemname} to uncolored name of {Invocador%{_val}%::%loop-world%::%{_numb}%}
+                    replace all "Level = ","Respawn = ","Vida = ","Dano = ","Armadura = ", "Velocidade = ", "Mira = ", "Distancia = " and "Skin = " in {_lorelist::*} with ""
+
+                    if {_lorelist::11} or {_lorelist::12} is not set:
+                        set {_lorelist::11} and {_lorelist::12} to 0
+                    
+                    loop item amount of {Invocador%{_val}%::%loop-world%::%{_numb}%} times:
+                        make console execute command "spawnmobc %{_val}% %{_itemname}% %{_lorelist::7}% %{_lorelist::6}% %{_lorelist::9}% %{_lorelist::10}% %{_lorelist::11}% %{_lorelist::12}% %loop-world% %{_lorelist::13}%"
+    #        broadcast "%{_lore1}%"
+
+#spawnar os mobs, conjunto com drops.sk
+command /spawn [<world>] [<world>] [<world>] [<world>] [<world>] [<world>]:
+    executable by: console
+    trigger:
+        message "Espere..."
+        add arg-1 to {_worlds::*}
+        add arg-2 to {_worlds::*}
+        add arg-3 to {_worlds::*}
+        add arg-4 to {_worlds::*}
+        add arg-5 to {_worlds::*}
+        add arg-6 to {_worlds::*}
+
+        loop all worlds:
+            {_worlds::*} contains loop-world
+
+            set {_levelmin} to max(floor({level::%loop-world%} / 10) * 10 - 10, 0)
+
+            #zombiecaverna1
+            loop "%30 - {quantmobs::%loop-world%}%" parsed as integer times:
+                add 1 to {_numb}
+                chance of "%{chance::%loop-world%}%" parsed as integer:
+                    set {_health} to 0
+                    set {_damage} to 0
+                    set {_level} to a random integer between {_levelmin} and {level::%loop-world%} * 2
+
+                    set {_tipomob} to a random text out of "Stray", "Spider" and "Husk"
+
+                    loop "%{_level}%" parsed as integer times:
+                        add a random number between {mobs::%{_tipomob}%::1} and {mobs::%{_tipomob}%::2} to {_health}
+                        add a random number between {mobs::%{_tipomob}%::3} and {mobs::%{_tipomob}%::4} to {_damage}
+                    set {_armor} to a random number between {mobs::%{_tipomob}%::5} and {mobs::%{_tipomob}%::6}
+                    set {_speed} to a random number between {mobs::%{_tipomob}%::7} and {mobs::%{_tipomob}%::8}
+                    set {_npcspeed} to a random number between {mobs::%{_tipomob}%::9} and {mobs::%{_tipomob}%::10}
+                    set {_accuracy} to a random number between {mobs::%{_tipomob}%::11} and {mobs::%{_tipomob}%::12}
+                    set {_range} to a random number between {mobs::%{_tipomob}%::13} and {mobs::%{_tipomob}%::14}
+
+                    set {_nomespawn} to "caverna1"
+
+                    add "spawnmob %x-coordinate of {spawns::%{_nomespawn}%::%{_numb}%}%,%y-coordinate of {spawns::%{_nomespawn}%::%{_numb}%}%,%z-coordinate of {spawns::%{_nomespawn}%::%{_numb}%}% %{_tipomob}% %{_level}% %{_damage}% %{_health}% %{_armor}% %{_speed}% / %{_npcspeed}% %{_accuracy}% %{_range}% %loop-world% %{_nomespawn}%_%loop-integer%" to {_spawnmoblist::*}
+
+            set {_numb} to 0
+
+            #nether1
+            loop 7 times:
+                add 1 to {_numb}
+                chance of 90%:
+                    set {_health} to 0
+                    set {_damage} to 0
+                    set {_level} to a random integer between {_levelmin} and {level::%loop-world%} * 2
+
+                    set {_tipomob} to a random text out of "Piglin_Brute", "Hoglin" and "Strider"
+
+                    loop "%{_level}%" parsed as integer times:
+                        add a random number between {mobs::%{_tipomob}%::1} and {mobs::%{_tipomob}%::2} to {_health}
+                        add a random number between {mobs::%{_tipomob}%::3} and {mobs::%{_tipomob}%::4} to {_damage}
+                    set {_armor} to a random number between {mobs::%{_tipomob}%::5} and {mobs::%{_tipomob}%::6}
+                    set {_speed} to a random number between {mobs::%{_tipomob}%::7} and {mobs::%{_tipomob}%::8}
+                    set {_npcspeed} to a random number between {mobs::%{_tipomob}%::9} and {mobs::%{_tipomob}%::10}
+                    set {_accuracy} to a random number between {mobs::%{_tipomob}%::11} and {mobs::%{_tipomob}%::12}
+                    set {_range} to a random number between {mobs::%{_tipomob}%::13} and {mobs::%{_tipomob}%::14}
+
+                    set {_nomespawn} to "nether1"
+
+                    add "spawnmob %x-coordinate of {spawns::%{_nomespawn}%::%{_numb}%}%,%y-coordinate of {spawns::%{_nomespawn}%::%{_numb}%}%,%z-coordinate of {spawns::%{_nomespawn}%::%{_numb}%}% %{_tipomob}% %{_level}% %{_damage}% %{_health}% %{_armor}% %{_speed}% / %{_npcspeed}% %{_accuracy}% %{_range}% %loop-world% %{_nomespawn}%_%loop-integer%" to {_spawnmoblist::*}
+
+            set {_numb} to 0
+
+            #vila1
+            loop "%23 + 5 - {quantmobs::%loop-world%}%" parsed as integer times:
+                add 1 to {_numb}
+                chance of 50%:
+                    set {_health} to 0
+                    set {_damage} to 0
+                    set {_level} to a random integer between {_levelmin} and {level::%loop-world%} * 2
+
+                    set {_tipomob} to a random text out of "Ravager", "Pillager" and "Vindicator"
+
+                    {_numb} <= 2:
+                        set {_tipomob} to "Pillager"
+
+                    loop "%{_level}%" parsed as integer times:
+                        add a random number between {mobs::%{_tipomob}%::1} and {mobs::%{_tipomob}%::2} to {_health}
+                        add a random number between {mobs::%{_tipomob}%::3} and {mobs::%{_tipomob}%::4} to {_damage}
+                    set {_armor} to a random number between {mobs::%{_tipomob}%::5} and {mobs::%{_tipomob}%::6}
+                    set {_speed} to a random number between {mobs::%{_tipomob}%::7} and {mobs::%{_tipomob}%::8}
+                    set {_npcspeed} to a random number between {mobs::%{_tipomob}%::9} and {mobs::%{_tipomob}%::10}
+                    set {_accuracy} to a random number between {mobs::%{_tipomob}%::11} and {mobs::%{_tipomob}%::12}
+                    set {_range} to a random number between {mobs::%{_tipomob}%::13} and {mobs::%{_tipomob}%::14}
+
+                    set {_nomespawn} to "vila1"
+
+                    add "spawnmob %x-coordinate of {spawns::%{_nomespawn}%::%{_numb}%}%,%y-coordinate of {spawns::%{_nomespawn}%::%{_numb}%}%,%z-coordinate of {spawns::%{_nomespawn}%::%{_numb}%}% %{_tipomob}% %{_level}% %{_damage}% %{_health}% %{_armor}% %{_speed}% / %{_npcspeed}% %{_accuracy}% %{_range}% %loop-world% %{_nomespawn}%_%loop-integer%" to {_spawnmoblist::*}
+
+            set {_numb} to 0
+
+            #pantano1
+            loop 7 times:
+                add 1 to {_numb}
+                chance of 90%:
+                    set {_health} to 0
+                    set {_damage} to 0
+                    set {_level} to a random integer between {_levelmin} and {level::%loop-world%} * 2
+
+                    set {_tipomob} to a random text out of "Witch" and "Frog"
+
+                    loop "%{_level}%" parsed as integer times:
+                        add a random number between {mobs::%{_tipomob}%::1} and {mobs::%{_tipomob}%::2} to {_health}
+                        add a random number between {mobs::%{_tipomob}%::3} and {mobs::%{_tipomob}%::4} to {_damage}
+                    set {_armor} to a random number between {mobs::%{_tipomob}%::5} and {mobs::%{_tipomob}%::6}
+                    set {_speed} to a random number between {mobs::%{_tipomob}%::7} and {mobs::%{_tipomob}%::8}
+                    set {_npcspeed} to a random number between {mobs::%{_tipomob}%::9} and {mobs::%{_tipomob}%::10}
+                    set {_accuracy} to a random number between {mobs::%{_tipomob}%::11} and {mobs::%{_tipomob}%::12}
+                    set {_range} to a random number between {mobs::%{_tipomob}%::13} and {mobs::%{_tipomob}%::14}
+
+                    set {_nomespawn} to "pantano1"
+
+                    add "spawnmob %x-coordinate of {spawns::%{_nomespawn}%::%{_numb}%}%,%y-coordinate of {spawns::%{_nomespawn}%::%{_numb}%}%,%z-coordinate of {spawns::%{_nomespawn}%::%{_numb}%}% %{_tipomob}% %{_level}% %{_damage}% %{_health}% %{_armor}% %{_speed}% / %{_npcspeed}% %{_accuracy}% %{_range}% %loop-world% %{_nomespawn}%_%loop-integer%" to {_spawnmoblist::*}
+
+            set {_numb} to 0
+
+            #caverna2
+            loop 117 times:
+                add 1 to {_numb}
+                chance of 40%:
+                    wait 2 ticks
+                    set {_health} to 0
+                    set {_damage} to 0
+                    set {_level} to a random integer between {_levelmin} and {level::%loop-world%} * 2
+
+                    set {_tipomob} to a random text out of "Zombie", "Skeleton", "Spider", "Creeper" and "Enderman"
+
+                    loop "%{_level}%" parsed as integer times:
+                        add a random number between {mobs::%{_tipomob}%::1} and {mobs::%{_tipomob}%::2} to {_health}
+                        add a random number between {mobs::%{_tipomob}%::3} and {mobs::%{_tipomob}%::4} to {_damage}
+                    set {_armor} to a random number between {mobs::%{_tipomob}%::5} and {mobs::%{_tipomob}%::6}
+                    set {_speed} to a random number between {mobs::%{_tipomob}%::7} and {mobs::%{_tipomob}%::8}
+                    set {_npcspeed} to a random number between {mobs::%{_tipomob}%::9} and {mobs::%{_tipomob}%::10}
+                    set {_accuracy} to a random number between {mobs::%{_tipomob}%::11} and {mobs::%{_tipomob}%::12}
+                    set {_range} to a random number between {mobs::%{_tipomob}%::13} and {mobs::%{_tipomob}%::14}
+
+                    set {_nomespawn} to "caverna2"
+                    add "spawnmob %x-coordinate of {spawns::%{_nomespawn}%::%{_numb}%}%,%y-coordinate of {spawns::%{_nomespawn}%::%{_numb}%}%,%z-coordinate of {spawns::%{_nomespawn}%::%{_numb}%}% %{_tipomob}% %{_level}% %{_damage}% %{_health}% %{_armor}% %{_speed}% / %{_npcspeed}% %{_accuracy}% %{_range}% %loop-world% %{_nomespawn}%_%loop-integer%" to {_spawnmoblist::*}
+            message "Valores Spawn pegos do %loop-world%!"
+            set {_numb} to 0
+
+            message "Spawns sendo feitos!"
+            loop {_spawnmoblist::*}:
+                make console execute command "%loop-value-2%"
+            message "Spawns Feitos em %loop-world%"
+            delete {_spawnmoblist::*}
+
+        message "Spawns feitos!"

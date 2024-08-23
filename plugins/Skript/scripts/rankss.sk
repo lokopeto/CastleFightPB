@@ -1,0 +1,20 @@
+
+on join:
+    set {psspwait::%player%} to 1
+    {rank::%player%} is not set:
+        set {rank::%player%} to 1
+
+#criar sistema de ranks
+
+on death:
+    if attacker is a player:
+        if victim is npc:
+            add 1 to {pontuaçãopartida::%attacker%::%world of attacker%::4}
+    if attacker is npc:
+        if victim is a player:
+            add 1 to {pontuaçãopartida::%victim%::%world of victim%::5}
+
+on death of player:
+    if attacker is a player:
+        add 1 to {pontuaçãopartida::%attacker%::%world of attacker%::2}
+    add 1 to {pontuaçãopartida::%victim%::%world of victim%::3}
